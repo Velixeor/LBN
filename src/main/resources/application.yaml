@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: LBN
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment
+    username: postgres
+    password: 135790
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database: postgresql
+  liquibase:
+    change-log: classpath:db.changelog/master.yaml
+    user: postgres
+    password: 135790
+    liquibase-schema: lb
+server:
+  port : 8084
