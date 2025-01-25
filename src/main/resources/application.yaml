@@ -18,3 +18,6 @@ spring:
     liquibase-schema: lb
 server:
   port : 8084
+
+request:
+  limit: 100
