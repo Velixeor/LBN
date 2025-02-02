@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.lbn.core.LoadBalancer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -18,13 +19,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RequestService {
     private final LoadBalancer loadBalancer;
-
-    private RestTemplate createRestTemplateWithTimeout() {
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(2000);
-        requestFactory.setReadTimeout(2000);
-        return new RestTemplate(requestFactory);
-    }
+    @Value("${request.connect-timeout}")
+    private int connectTimeout;
+    @Value("${request.read-timeout}")
+    private int readTimeout;
 
     public ResponseEntity<?> proxyRequest(String typeService, HttpServletRequest request) {
         try {
@@ -38,6 +36,13 @@ public class RequestService {
                 return handleError(typeService, retryException);
             }
         }
+    }
+
+    private RestTemplate createRestTemplateWithTimeout() {
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(connectTimeout);
+        requestFactory.setReadTimeout(readTimeout);
+        return new RestTemplate(requestFactory);
     }
 
     private ResponseEntity<?> attemptRequest(String typeService, HttpServletRequest request, boolean isRetry) {

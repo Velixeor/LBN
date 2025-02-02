@@ -16,8 +16,13 @@ spring:
     user: postgres
     password: 135790
     liquibase-schema: lb
+  data:
+    redis:
+      url: redis://localhost:6379
 server:
   port : 8084
 
 request:
   limit: 100
+  connect-timeout: 2000
+  read-timeout: 2000
